@@ -1,0 +1,25 @@
+{% load staticfiles %}
+<!Doctype html>
+
+<html lang="en">
+
+<head>
+
+	<!-- Bootstrap 4 -->
+	<!--
+	 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" 
+	 integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	-->
+
+	<!-- Default css for the base.html-->
+	<link rel="stylesheet", href="{% static 'css/base.css' %}">
+</head>
+<body>
+	<div>
+		<!-- Put whatever you want here -->
+	</div>
+
+	{% block content %}
+	{% endblock %}
+</body>
+
