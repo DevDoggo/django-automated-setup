@@ -25,6 +25,8 @@ echo -e ">>> Set django 'projectname':"
 read projectname
 echo -e ">>> Set django 'appname':"
 read appname
+echo -e ">>> Set django 'local ip': (ex, 0.0.0.0)"
+read localip
 
 #django project and app creation
 django-admin startproject $projectname
@@ -37,12 +39,13 @@ cd ..
 cp -r static $projectname/$appname/static
 cp -r templates $projectname/$appname/templates
 
-
-#Modify views/urls/settings to route correctly
-sed -i "s/appname/$appname/g" misc-files/main_urls.py
-
 #Place views/urls files
 cp misc-files/main_urls.py $projectname/$projectname/urls.py
 cp misc-files/app_urls.py $projectname/$appname/urls.py
 cp misc-files/app_views.py $projectname/$appname/views.py
 
+
+#Modify views/urls/settings to route correctly
+sed -i "s/appname/$appname/g" $projectname/$projectname/urls.py 
+sed -i "s/ALLOWED_HOSTS = \[\]/ALLOWED_HOSTS = \[\'$localip\'\]/g" $projectname/$projectname/settings.py
+sed -i "s/'DIRS'\: \[\]/'DIRS'\: \[\'$appname\/templates\'\]/g" $projectname/$projectname/settings.py
