@@ -1,6 +1,9 @@
 #!/bin/bash
 
 #Virtual Environment Setup
+
+echo -e "\n------- Django Template Project Setup -------\n"
+
 echo -e "============================================="
 echo -e "--Setup: Creating virtual environment..."
 echo -e "=============================================\n"
@@ -34,9 +37,8 @@ django-admin startproject $projectname
 cd $projectname
 python3 manage.py startapp $appname
 
-
-echo -e "--Setup: Configuring local files\n"
-cd ..
+cd .. #brings us back up to document root
+echo -e "--Setup: Configuring local files\n" 
 #Places Static and Template folders into app
 cp -r static $projectname/$appname/static
 cp -r templates $projectname/$appname/templates
@@ -55,6 +57,16 @@ cat misc-files/static-dir-code >> $projectname/$projectname/settings.py
 sed -i "s/appname_example/$appname/g" $projectname/$projectname/settings.py
 
 #Django migration
+cd $projectname
 echo -e "--Setup: Django Migration...\n"
 #python3 manage.py makemigrations
 python3 manage.py migrate
+
+
+
+
+
+#Initialization Complete
+echo -e "\n\n============================================="
+echo -e "------- Django Project Setup Complete -------"
+echo -e "=============================================\n"
