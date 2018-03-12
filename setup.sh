@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#Virtual Environment Setup
 echo -e "============================================="
 echo -e "--Setup: Creating virtual environment..."
 echo -e "=============================================\n"
@@ -15,7 +16,7 @@ pip3 install -r requirements.txt
 echo -e "--Setup: Dependencies are done.\n"
 
 
-#django config 
+#Django Config Setup
 echo -e ">>>>>>>============Django=============<<<<<<<"
 echo -e "--Setup: Django Project Config up next:"
 echo -e "=============================================\n"
@@ -34,6 +35,7 @@ cd $projectname
 python3 manage.py startapp $appname
 
 
+echo -e "--Setup: Configuring local files\n"
 cd ..
 #Places Static and Template folders into app
 cp -r static $projectname/$appname/static
@@ -44,8 +46,15 @@ cp misc-files/main_urls.py $projectname/$projectname/urls.py
 cp misc-files/app_urls.py $projectname/$appname/urls.py
 cp misc-files/app_views.py $projectname/$appname/views.py
 
-
 #Modify views/urls/settings to route correctly
 sed -i "s/appname/$appname/g" $projectname/$projectname/urls.py 
 sed -i "s/ALLOWED_HOSTS = \[\]/ALLOWED_HOSTS = \[\'$localip\'\]/g" $projectname/$projectname/settings.py
 sed -i "s/'DIRS'\: \[\]/'DIRS'\: \[\'$appname\/templates\'\]/g" $projectname/$projectname/settings.py
+
+cat misc-files/static-dir-code >> $projectname/$projectname/settings.py
+sed -i "s/appname_example/$appname/g" $projectname/$projectname/settings.py
+
+#Django migration
+echo -e "--Setup: Django Migration...\n"
+#python3 manage.py makemigrations
+python3 manage.py migrate
