@@ -14,6 +14,9 @@ chmod u+x setup.sh<br />
 ./setup.sh or . ./setup.sh<br />
 (Option two will put your terminal current directory to the created project's)
 
+Note: The input you give in the setup.sh script must be perfectly correct and useable, 
+because there is no form of correctness-checking performed at all.
+It is assumed that you don't want to sabotage and break your own project. :)
 
 # Dependencies
 Python Virtualenv
