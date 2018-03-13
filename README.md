@@ -9,7 +9,7 @@ it simply saves time for the people who already have some knowledge.
 
 git clone git@doggonet.campus.ltu.se:devdoggo/django-advanced-template.git<br />
 cd django-advanced-template<br />
-chmod u+x setup.sh<br />
+chmod +x setup.sh<br />
 
 ./setup.sh <br />
 or <br />

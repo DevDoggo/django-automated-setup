@@ -6,13 +6,9 @@ echo -e "\n------- Django Template Project Setup -------\n"
 
 #user input for django config
 read -p ">>> Set django 'projectname': " projectname
-#read projectname
 read -p ">>> Set django 'appname': " appname
-#read appname
 read -p ">>> Set django 'local ip', (ex. 0.0.0.0): " localip
-#read localip
 read -p ">>> Set django 'port', (ex. 8000): " port
-#read port
 
 echo -e "\n============================================="
 echo -e "\nSettings will be made as following:"
@@ -20,7 +16,6 @@ echo -e "Projectname: $projectname \nAppname: $appname \nLocal IP: $localip \nPo
 echo -e "A python virtual environment (venv) will be created as well.\n"
 echo -e "Note: No input settings are checked for correctness.\nAny settings you choose will be used regardless of legitimacy.\n" 
 read -p "Proceed with these settings? [Y/n]: " correctconfig
-#read correctconfig
 
 #User Setting Consent Check
 if [ "$correctconfig" == "n" ]; then 
