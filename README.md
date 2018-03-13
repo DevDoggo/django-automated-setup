@@ -1,15 +1,20 @@
 
+This is a package with a bash-script as well as other default-styled files for a newly created Django Project. 
+This was developed to speed up django-project creation. In many cases you need to do the exact same setup to begin with,
+and this is meant to turn thirty-to-sixty minutes of setting up the config yourself into a less-than-a-minute automated setup.
 
-This is a template of a Django Project meant to be used for quick and painless creation of a new Django Project. 
-The idea is that there should be scrips available in the project to set up a project properly and accordingly to one's needs,
-however this'll take a little bit of consideration if it's even necessary.
+Pro-Tip: If you know nothing of Django, learn to set up a project manually first. This software does not help a new person learn how to use django, 
+it simply saves time for the people who already have some knowledge.
 
-###How to Run
+## How to Run
 
 git clone git@doggonet.campus.ltu.se:devdoggo/django-advanced-template.git
 cd django-advanced-template
 chmod u+x setup.sh
-./setup.sh
 
-###Dependencies
+./setup.sh or . ./setup.sh
+(Option two will put your terminal current directory to the created project's)
+
+
+# Dependencies
 Python Virtualenv
