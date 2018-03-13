@@ -58,6 +58,8 @@ cp -r templfiles/templates $projectname/$appname/templates
 cp templfiles/misc-files/main_urls.py $projectname/$projectname/urls.py
 cp templfiles/misc-files/app_urls.py $projectname/$appname/urls.py
 cp templfiles/misc-files/app_views.py $projectname/$appname/views.py
+cp templfiles/misc-files/app_models.py $projectname/$appname/models.py
+cp templfiles/misc-files/app_forms.py $projectname/$appname/forms.py
 
 #Modify views/urls/settings to route correctly
 sed -i "s/appname/$appname/g" $projectname/$projectname/urls.py 
@@ -65,7 +67,6 @@ sed -i "s/ALLOWED_HOSTS = \[\]/ALLOWED_HOSTS = \[\'$localip\'\]/g" $projectname/
 sed -i "s/'DIRS'\: \[\]/'DIRS'\: \[\'$appname\/templates\'\]/g" $projectname/$projectname/settings.py
 cat templfiles/misc-files/static-dir-code >> $projectname/$projectname/settings.py
 sed -i "s/appname_example/$appname/g" $projectname/$projectname/settings.py
-
 sed -i "/'django.contrib.staticfiles',/a #    DjangoApps\n    '$appname'," $projectname/$projectname/settings.py
 
 
