@@ -4,35 +4,48 @@
 
 echo -e "\n------- Django Template Project Setup -------\n"
 
-echo -e "============================================="
+#user input for django config
+read -p ">>> Set django 'projectname': " projectname
+#read projectname
+read -p ">>> Set django 'appname': " appname
+#read appname
+read -p ">>> Set django 'local ip', (ex. 0.0.0.0): " localip
+#read localip
+read -p ">>> Set django 'port', (ex. 8000): " port
+#read port
+
+echo -e "\n============================================="
+echo -e "\nSettings will be made as following:"
+echo -e "Projectname: $projectname \nAppname: $appname \nLocal IP: $localip \nPort: $port\n"
+echo -e "A python virtual environment (venv) will be created as well.\n"
+echo -e "Note: No input settings are checked for correctness.\nAny settings you choose will be used regardless of legitimacy.\n" 
+read -p "Proceed with these settings? [Y/n]: " correctconfig
+#read correctconfig
+
+#User Setting Consent Check
+if [ "$correctconfig" == "n" ]; then 
+	echo "\nDjango Project Config was manually interrupted! \n"
+	exit	
+fi
+
+echo -e "\n============================================="
 echo -e "--Setup: Creating virtual environment..."
 echo -e "=============================================\n"
 virtualenv venv 
 
-echo -e "--Setup: Starting virtual environment...\n"
+echo -e "--\nSetup: Starting virtual environment...\n"
 source venv/bin/activate
 
 echo -e "============================================="
 echo -e "--Setup: Installing requirements with pip3..."
 echo -e "=============================================\n"
 pip3 install -r requirements.txt
-echo -e "--Setup: Dependencies are done.\n"
+echo -e "--\nSetup: Dependencies are done.\n"
 
-
-#Django Config Setup
+#Django Config 
 echo -e ">>>>>>>============Django=============<<<<<<<"
 echo -e "--Setup: Django Project Config up next:"
-echo -e "=============================================\n"
-
-#user input for django config
-echo -e ">>> Set django 'projectname':"
-read projectname
-echo -e ">>> Set django 'appname':"
-read appname
-echo -e ">>> Set django 'local ip': (ex. 0.0.0.0)"
-read localip
-echo -e ">>> Set django 'port': (ex. 8000)"
-read port
+echo -e "============================================="
 
 #django project and app creation
 django-admin startproject $projectname
@@ -40,7 +53,7 @@ cd $projectname
 python3 manage.py startapp $appname
 
 cd .. #brings us back up to document root
-echo -e "--Setup: Configuring local files\n" 
+echo -e "\n--Setup: Configuring local files\n" 
 #Places Static and Template folders into app
 cp -r templfiles/static $projectname/$appname/static
 cp -r templfiles/templates $projectname/$appname/templates
@@ -66,10 +79,22 @@ python3 manage.py migrate
 
 #Creating Run File
 echo "#!/bin/bash" > run.sh
+echo "source venv/bin/activate"
 echo "python3 manage.py runserver $localip:$port" >> run.sh
 
+#Moving venv into project
+deactivate
+echo -e "\n--Setup: Moving virtual environment (venv) into project root"
+cd ..
+mv venv/ $projectname/venv
+
+echo -e "\n--Setup: Moving Django Project out of the Django Template directory"
+#Moving project outside of django template directory
+mv $projectname ../$projectname
+cd ..
 
 #Initialization Complete
-echo -e "\n\n============================================="
+echo -e "\n============================================="
 echo -e "------- Django Project Setup Complete -------"
 echo -e "=============================================\n"
+
