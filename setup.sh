@@ -90,7 +90,7 @@ deactivate
 echo -e "\n--Setup: Moving Django Project out of the Django Template directory"
 mv $projectname/* ../$projectname
 rmdir $projectname
-cd ..
+cd ../$projectname
 
 #Initialization Complete
 echo -e "\n============================================="
