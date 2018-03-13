@@ -31,16 +31,17 @@ fi
 echo -e "\n============================================="
 echo -e "--Setup: Creating virtual environment..."
 echo -e "=============================================\n"
-virtualenv venv 
+mkdir ../$projectname
+virtualenv ../$projectname/venv 
 
 echo -e "--\nSetup: Starting virtual environment...\n"
-source venv/bin/activate
+source ../$projectname/venv/bin/activate
 
 echo -e "============================================="
 echo -e "--Setup: Installing requirements with pip3..."
 echo -e "=============================================\n"
 pip3 install -r requirements.txt
-echo -e "--\nSetup: Dependencies are done.\n"
+echo -e "\n--Setup: Dependencies are done.\n"
 
 #Django Config 
 echo -e ">>>>>>>============Django=============<<<<<<<"
@@ -53,7 +54,7 @@ cd $projectname
 python3 manage.py startapp $appname
 
 cd .. #brings us back up to document root
-echo -e "\n--Setup: Configuring local files\n" 
+echo -e "\n--Setup: Configuring local files...\n" 
 #Places Static and Template folders into app
 cp -r templfiles/static $projectname/$appname/static
 cp -r templfiles/templates $projectname/$appname/templates
@@ -78,18 +79,17 @@ python3 manage.py migrate
 
 #Creating Run File
 echo "#!/bin/bash" > run.sh
-echo "source venv/bin/activate"
+echo "source venv/bin/activate" >> run.sh
 echo "python3 manage.py runserver $localip:$port" >> run.sh
+chmod +x run.sh
 
-#Moving venv into project
-deactivate
-echo -e "\n--Setup: Moving virtual environment (venv) into project root"
+
+#Moving the project out of the django-template directory
 cd ..
-mv venv/ $projectname/venv
-
+deactivate
 echo -e "\n--Setup: Moving Django Project out of the Django Template directory"
-#Moving project outside of django template directory
-mv $projectname ../$projectname
+mv $projectname/* ../$projectname
+rmdir $projectname
 cd ..
 
 #Initialization Complete
