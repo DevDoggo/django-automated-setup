@@ -11,7 +11,9 @@ git clone git@doggonet.campus.ltu.se:devdoggo/django-advanced-template.git<br />
 cd django-advanced-template<br />
 chmod u+x setup.sh<br />
 
-./setup.sh or . ./setup.sh<br />
+./setup.sh <br />
+or <br />
+. ./setup.sh<br />
 (Option two will put your terminal current directory to the created project's)
 
 Note: The input you give in the setup.sh script must be perfectly correct and useable, 
@@ -20,3 +22,4 @@ It is assumed that you don't want to sabotage and break your own project. :)
 
 # Dependencies
 Python Virtualenv
+A linux-based terminal with Bash scripting
