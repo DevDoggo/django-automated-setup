@@ -67,7 +67,6 @@ cp templfiles/misc-files/app_views.py $projectname/$appname/views.py
 sed -i "s/appname/$appname/g" $projectname/$projectname/urls.py 
 sed -i "s/ALLOWED_HOSTS = \[\]/ALLOWED_HOSTS = \[\'$localip\'\]/g" $projectname/$projectname/settings.py
 sed -i "s/'DIRS'\: \[\]/'DIRS'\: \[\'$appname\/templates\'\]/g" $projectname/$projectname/settings.py
-
 cat templfiles/misc-files/static-dir-code >> $projectname/$projectname/settings.py
 sed -i "s/appname_example/$appname/g" $projectname/$projectname/settings.py
 
