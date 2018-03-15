@@ -5,6 +5,10 @@ and this is meant to turn thirty-to-sixty minutes of setting up the config yours
 Pro-Tip: If you know nothing of Django, learn to set up a project manually first. This software does not help a new person learn how to use django, 
 it simply saves time for the people who already have some knowledge.
 
+## How it Works
+You're asked to give Projectname, Appname, Local Debug-IP and Port. That's all!
+After that, the Django-setup will be fully automated! You'll be ready to run the application straight of the back with run.sh file created in the project!
+
 ## How to Run
 
 git clone git@doggonet.campus.ltu.se:devdoggo/django-advanced-template.git<br />
