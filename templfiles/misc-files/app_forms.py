@@ -12,5 +12,5 @@ class ExampleModelForm(forms.ModelForm):
 
 
 class ExampleForm(forms.Form):
-    example_string1 = forms.Charfield(label='example label1', max_length=100)
-    example_strin2 = forms.Charfield(label='example label2', max_length=200)
+    example_string1 = forms.CharField(label='example label in forms.py', max_length=100, required=False)
+    example_string2 = forms.CharField(label='example label2', max_length=200)

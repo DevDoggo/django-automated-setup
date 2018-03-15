@@ -60,6 +60,9 @@ cp templfiles/misc-files/app_urls.py $projectname/$appname/urls.py
 cp templfiles/misc-files/app_views.py $projectname/$appname/views.py
 cp templfiles/misc-files/app_models.py $projectname/$appname/models.py
 cp templfiles/misc-files/app_forms.py $projectname/$appname/forms.py
+#Add Migration File
+cp templfiles/misc-files/migrate.sh $projectname/migrate.sh
+chmod +x $projectname/migrate.sh
 
 #Modify views/urls/settings to route correctly
 sed -i "s/appname/$appname/g" $projectname/$projectname/urls.py 

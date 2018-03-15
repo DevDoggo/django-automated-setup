@@ -5,5 +5,31 @@
 
 <h1 id="django-test">If it's green, both html and css works!</h1>
 
+<hr>
+
+{{ varExampleName }}
+<br><hr>
+
+
+<div style="margin-left: 20px; margin-top: 20px;">
+	<form action="/" method="post"> <!-- Input form starts here -->
+	
+	{% csrf_token %}
+
+	<div>
+		{{ form.example_string1.label }}<br>
+		{{ form.example_string1 }}<br>
+	</div>
+	<br>
+	<div>
+		We can also pretend this is a label<br>
+		{{ form.example_string2 }}<br>
+	</div>	
+
+	<div style="padding: 20px;">
+		<input type="submit" value="Press me!">
+	</div>
+	</form> <!--Input form ends here -->
+</div>
 
 {% endblock %}
