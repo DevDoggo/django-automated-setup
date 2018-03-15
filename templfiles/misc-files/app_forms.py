@@ -6,8 +6,8 @@ class ExampleModelForm(forms.ModelForm):
     class Meta: 
         model = ExampleModel 
         fields = [
-            'example_string1',
-            'example_string2',
+            'example_model_string1',
+            'example_model_string2',
         ]
 
 

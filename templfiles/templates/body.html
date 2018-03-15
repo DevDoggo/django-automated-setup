@@ -11,7 +11,8 @@
 <br><hr>
 
 
-<div style="margin-left: 20px; margin-top: 20px;">
+<div style="margin-left: 20px; margin-top: 20px; border: solid; border-color: orange; padding-left: 20px;">
+	<h1>This is a regular form</h1>
 	<form action="/" method="post"> <!-- Input form starts here -->
 	
 	{% csrf_token %}
@@ -31,5 +32,28 @@
 	</div>
 	</form> <!--Input form ends here -->
 </div>
+
+<div style="margin-left: 20px; margin-top: 20px; border: solid; border-color: green; padding-left: 20px">
+	<h1>This is a model form</h1>
+	<form action="/" method="post"> <!-- Input form starts here -->
+	
+	{% csrf_token %}
+
+	<div>
+		{{ model_form.example_model_string1.label }}<br>
+		{{ model_form.example_model_string1 }}<br>
+	</div>
+	<br>
+	<div>
+		We can also pretend this is a label<br>
+		{{ model_form.example_model_string2 }}<br>
+	</div>	
+
+	<div style="padding: 20px;">
+		<input type="submit" value="Press me too!">
+	</div>
+	</form> <!--Input form ends here -->
+</div>
+
 
 {% endblock %}
