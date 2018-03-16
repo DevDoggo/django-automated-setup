@@ -7,7 +7,7 @@ echo -e "\n------- Django Template Project Setup -------\n"
 #user input for django config
 read -p ">>> Set django 'projectname': " projectname
 read -p ">>> Set django 'appname': " appname
-read -p ">>> Set django 'local ip', (ex. 0.0.0.0): " localip
+read -p ">>> Set django 'local ip', (ex. 127.0.0.1): " localip
 read -p ">>> Set django 'port', (ex. 8000): " port
 
 echo -e "\n============================================="
