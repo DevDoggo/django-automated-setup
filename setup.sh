@@ -77,8 +77,13 @@ sed -i "/'django.contrib.staticfiles',/a #    DjangoApps\n    '$appname'," $proj
 #Django migration
 cd $projectname
 echo -e "--Setup: Django Migration...\n"
-#python3 manage.py makemigrations
+python3 manage.py makemigrations
 python3 manage.py migrate
+
+#python collect static - redirects output to /dev/null
+echo -e "\n--Setup: Collecting Django Static Files\n"
+python3 manage.py collectstatic > /dev/null
+
 
 #Creating Run File
 echo "#!/bin/bash" > run.sh
