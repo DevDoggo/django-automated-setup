@@ -113,7 +113,7 @@ if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ];  then
 	curdir=$(pwd)
 	projectdir="$(dirname "$curdir")"
 	
-	echo -e "--Setup: Moving Nginx files..."
+	echo -e "\n--Setup: Moving Nginx files..."
 
 	cp templfiles/nginx/uwsgi.ini $projectdir/$projectname/uwsgi.ini
 	cp templfiles/nginx/uwsgi_params $projectdir/$projectname/uwsgi_params
@@ -121,7 +121,7 @@ if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ];  then
 	cp templfiles/nginx/nginx-run.sh $projectdir/$projectname/nginx-run.sh
 	chmod +x $projectdir/$projectname/nginx-run.sh
 
-	echo -e "--Setup: Routing Nginx files to the Django project..."
+	echo -e "\n--Setup: Routing Nginx files to the Django project..."
 
 	sed -i "s,/path/to/your/project,$projectdir/$projectname,g" templfiles/nginx/site_nginx.conf
 	sed -i "s,project,$projectname,g" templfiles/nginx/site_nginx.conf
