@@ -14,13 +14,18 @@ read -p ">>> Do you want to setup Nginx? [y/N]: " nginx
 
 echo -e "\n============================================="
 echo -e "\nSettings will be made as following:"
-echo -e "Projectname: $projectname \nAppname: $appname \nLocal IP: $localip \nPort: $port\n"
+echo -e "Projectname: $projectname \nAppname: $appname \nLocal IP: $localip \nPort: $port"
+if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ]; then 
+	echo -e "Nginx: Yes\n"
+else 
+	echo -e "Nginx: No\n"
+fi
 echo -e "A python virtual environment (venv) will be created as well.\n"
 echo -e "Note: No input settings are checked for correctness.\nAny settings you choose will be used regardless of legitimacy.\n" 
 read -p "Proceed with these settings? [Y/n]: " correctconfig
 
 #User Setting Consent Check
-if [ "$correctconfig" == "n" ]; then 
+if [ "$correctconfig" == "n" ] || [ "$correctconfig" == "N" ]; then 
 	echo "\nDjango Project Config was manually interrupted! \n"
 	exit	
 fi
@@ -83,7 +88,7 @@ python3 manage.py makemigrations
 python3 manage.py migrate
 
 #python collect static - redirects output to /dev/null
-echo -e "\n--Setup: Collecting Django Static Files\n"
+echo -e "\n--Setup: Collecting Django Static Files...\n"
 python3 manage.py collectstatic > /dev/null
 
 
@@ -97,18 +102,29 @@ chmod +x run.sh
 cd ..
 #NGINX config ---------------------------------------------
 #User Setting Consent Check
-if [ "$correctconfig" == "y" ]; then 
+if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ];  then 
+	echo -e "\n============================================="
+	echo -e "--------------- NGINX Setup -----------------"
+	echo -e "=============================================\n"
+    
+	echo -e "--Setup: Installing uWGSI...\n"
+	pip3 install uwsgi
+
 	curdir=$(pwd)
 	projectdir="$(dirname "$curdir")"
-		
+	
+	echo -e "--Setup: Moving Nginx files..."
+
 	cp templfiles/nginx/uwsgi.ini $projectdir/$projectname/uwsgi.ini
 	cp templfiles/nginx/uwsgi_params $projectdir/$projectname/uwsgi_params
 	cp templfiles/nginx/site_nginx.conf templfiles/nginx/temp.conf
+	cp templfiles/nginx/nginx-run.sh $projectdir/$projectname/nginx-run.sh
+	chmod +x $projectdir/$projectname/nginx-run.sh
 
-	echo $projectdir
+	echo -e "--Setup: Routing Nginx files to the Django project..."
+
 	sed -i "s,/path/to/your/project,$projectdir/$projectname,g" templfiles/nginx/site_nginx.conf
 	sed -i "s,project,$projectname,g" templfiles/nginx/site_nginx.conf
-
 	sed -i "s,/path/to/your/project,$projectdir/$projectname,g" $projectdir/$projectname/uwsgi.ini
 	sed -i "s,project,$projectname,g" $projectdir/$projectname/uwsgi.ini
 
