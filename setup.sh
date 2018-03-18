@@ -113,6 +113,7 @@ if [ "$correctconfig" == "y" ]; then
 	sed -i "s,project,$projectname,g" $projectdir/$projectname/uwsgi.ini
 
 	cp templfiles/nginx/temp.conf templfiles/nginx/site_nginx.conf
+	rm templfiles/nginx/temp.conf
 fi
 
 
