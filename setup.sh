@@ -9,6 +9,7 @@ read -p ">>> Set django 'projectname': " projectname
 read -p ">>> Set django 'appname': " appname
 read -p ">>> Set django 'local ip', (ex. 127.0.0.1): " localip
 read -p ">>> Set django 'port', (ex. 8000): " port
+read -p "\n>>> Do you want to setup Nginx? [y/N]: " nginx 
 
 echo -e "\n============================================="
 echo -e "\nSettings will be made as following:"
@@ -92,8 +93,30 @@ echo "python3 manage.py runserver $localip:$port" >> run.sh
 chmod +x run.sh
 
 
-#Moving the project out of the django-template directory
 cd ..
+#NGINX config ---------------------------------------------
+#User Setting Consent Check
+if [ "$correctconfig" == "y" ]; then 
+	curdir=$(pwd)
+	projectdir="$(dirname "$curdir")"
+		
+	cp templfiles/nginx/uwsgi.ini $projectdir/$projectname/uwsgi.ini
+	cp templfiles/nginx/uwsgi_params $projectdir/$projectname/uwsgi_params
+	cp templfiles/nginx/site_nginx.conf templfiles/nginx/temp.conf
+
+	echo $projectdir
+	sed -i "s,/path/to/your/project,$projectdir/$projectname,g" templfiles/nginx/site_nginx.conf
+	sed -i "s,project,$projectname,g" templfiles/nginx/site_nginx.conf
+
+	sed -i "s,/path/to/your/project,$projectdir/$projectname,g" $projectdir/$projectname/uwsgi.ini
+	sed -i "s,project,$projectname,g" $projectdir/$projectname/uwsgi.ini
+
+	cp templfiles/nginx/temp.conf templfiles/nginx/site_nginx.conf
+fi
+
+
+
+#Moving the project out of the django-template directory
 deactivate
 echo -e "\n--Setup: Moving Django Project out of the Django Template directory"
 mv $projectname/* ../$projectname
