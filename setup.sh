@@ -9,7 +9,8 @@ read -p ">>> Set django 'projectname': " projectname
 read -p ">>> Set django 'appname': " appname
 read -p ">>> Set django 'local ip', (ex. 127.0.0.1): " localip
 read -p ">>> Set django 'port', (ex. 8000): " port
-read -p "\n>>> Do you want to setup Nginx? [y/N]: " nginx 
+echo -e ""
+read -p ">>> Do you want to setup Nginx? [y/N]: " nginx 
 
 echo -e "\n============================================="
 echo -e "\nSettings will be made as following:"
