@@ -26,8 +26,11 @@ read -p "Proceed with these settings? [Y/n]: " correctconfig
 
 #User Setting Consent Check
 if [ "$correctconfig" == "n" ] || [ "$correctconfig" == "N" ]; then 
-	echo "\nDjango Project Config was manually interrupted! \n"
-	exit	
+	
+	echo -e "\n>>>>>>>==================================<<<<<<<"
+	echo -e "Django Project Config was manually interrupted!"
+	echo -e ">>>>>>>==================================<<<<<<<\n"
+	return	
 fi
 
 echo -e "\n============================================="
