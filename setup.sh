@@ -161,5 +161,5 @@ if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ];  then
 	echo -e "\nIn the django project directory, write the following commands in order with sudo:\n
 	mv $siteconf /etc/nginx/sites-available/$siteconf
 	ln -s /etc/nginx/sites-available/$siteconf /etc/nginx/sites-enabled/
-	systemctl restart nginx\
+	systemctl restart nginx\n"
 fi
