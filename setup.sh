@@ -10,23 +10,26 @@ read -p ">>> Set django 'appname': " appname
 read -p ">>> Set django 'local ip', (ex. 127.0.0.1): " localip
 read -p ">>> Set django 'public ip' or 'url', (leave blank for none): " allowedhost
 read -p ">>> Set django 'port', (ex. 8000): " port
-read -p "\n>>> Do you want to setup Nginx? [y/N]: " nginx 
+read -p ">>> Do you want to setup Nginx? [y/N]: " nginx 
 
 echo -e "\n============================================="
 echo -e "\nSettings will be made as following:"
 echo -e "Projectname: $projectname \nAppname: $appname \nLocal IP: $localip \nExternal URL: $allowedhost\nPort: $port"
-if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ]; then 
+
+if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ]; 
+then 
 	echo -e "Nginx: Yes\n"
 else 
 	echo -e "Nginx: No\n"
 fi
+
 echo -e "A python virtual environment (venv) will be created as well.\n"
 echo -e "Note: No input settings are checked for correctness.\nAny settings you choose will be used regardless of legitimacy.\n" 
 read -p "Proceed with these settings? [Y/n]: " correctconfig
 
 #User Setting Consent Check
-if [ "$correctconfig" == "n" ] || [ "$correctconfig" == "N" ]; then 
-	
+if [ "$correctconfig" == "n" ] || [ "$correctconfig" == "N" ]; 
+then 	
 	echo -e "\n>>>>>>>==================================<<<<<<<"
 	echo -e "Django Project Config was manually interrupted!"
 	echo -e ">>>>>>>==================================<<<<<<<\n"
@@ -112,7 +115,8 @@ chmod +x run.sh
 cd ..
 #NGINX config ---------------------------------------------
 #User Setting Consent Check
-if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ];  then 
+if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ];  
+then 
 	echo -e "\n============================================="
 	echo -e "--------------- NGINX Setup -----------------"
 	echo -e "=============================================\n"
@@ -161,7 +165,8 @@ echo -e "\n============================================="
 echo -e "------- Django Project Setup Complete -------"
 echo -e "=============================================\n"
 
-if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ];  then 
+if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ];  
+then 
 	echo -e "\nTo finish the NGINX setup you need to manually move the .conf file to the Nginx available-sites and symlink it to sites-enabled."
 	echo -e "The reason this script doesn't do it is because it requires superuser privileges, thus it is preferably that the user personally does this last part of the setup."
 
