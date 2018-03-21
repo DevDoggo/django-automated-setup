@@ -136,8 +136,7 @@ if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ];  then
 	sed -i "s,/path/to/your/project,$sitedir,g" $sitedir/$siteconf
 	sed -i "s,project,$projectname,g" $sitedir/$siteconf
 	sed -i "s,/path/to/your/project,$sitedir,g" $sitedir/$uwsgiini
-	sed -i "s,project,$projectname,g" $sitedir/$uwsgiini
-	echo -e "$sitedir/nginx-run.sh"
+	sed -i "s,project,$projectname,g" $sitedir/$uwsgiini	
 	sed -i "s,project,$projectname,g" $sitedir/nginx-run.sh
 
 fi
