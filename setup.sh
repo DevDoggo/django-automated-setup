@@ -84,8 +84,6 @@ sed -i "s/'DIRS'\: \[\]/'DIRS'\: \[\'$appname\/templates\'\]/g" $projectname/$pr
 cat templfiles/misc-files/static-dir-code >> $projectname/$projectname/settings.py
 sed -i "s/appname_example/$appname/g" $projectname/$projectname/settings.py
 sed -i "/'django.contrib.staticfiles',/a #    DjangoApps\n    '$appname'," $projectname/$projectname/settings.py
-sed -i "s/project/$appname/g" $projectname/nginx-run.sh
-
 
 #Django migration
 cd $projectname
@@ -138,6 +136,8 @@ if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ];  then
 	sed -i "s,project,$projectname,g" $sitedir/$siteconf
 	sed -i "s,/path/to/your/project,$sitedir,g" $sitedir/$uwsgiini
 	sed -i "s,project,$projectname,g" $sitedir/$uwsgiini
+	sed -i "s/project/$appname/g" $projectname/nginx-run.sh
+
 fi
 
 
@@ -158,8 +158,8 @@ if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ];  then
 	echo -e "\nTo finish the NGINX setup you need to manually move the .conf file to the Nginx available-sites and symlink it to sites-enabled."
 	echo -e "The reason this script doesn't do it is because it requires superuser privileges, thus it is preferably that the user personally does this last part of the setup."
 
-	echo -e "\nIn the django project directory, write the following commands in order with sudo:\n
-	mv $siteconf /etc/nginx/sites-available/$siteconf
-	ln -s /etc/nginx/sites-available/$siteconf /etc/nginx/sites-enabled/
-	systemctl restart nginx\n"
+	echo -e "\nIn the django project directory, write the following commands in order with sudo:\n"
+	sudo mv $siteconf /etc/nginx/sites-available/$siteconf
+	sudo ln -s /etc/nginx/sites-available/$siteconf /etc/nginx/sites-enabled/
+	sudo systemctl restart nginx
 fi
