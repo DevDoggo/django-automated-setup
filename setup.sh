@@ -115,24 +115,26 @@ if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ];  then
 
 	curdir=$(pwd)
 	projectdir="$(dirname "$curdir")"
-	
+	sitedir=$projectdir/$projectname
+	echo $sitedir
 	echo -e "\n--Setup: Moving Nginx files..."
 
-	cp templfiles/nginx/uwsgi.ini $projectdir/$projectname/uwsgi.ini
-	cp templfiles/nginx/uwsgi_params $projectdir/$projectname/uwsgi_params
-	cp templfiles/nginx/site_nginx.conf templfiles/nginx/temp.conf
-	cp templfiles/nginx/nginx-run.sh $projectdir/$projectname/nginx-run.sh
-	chmod +x $projectdir/$projectname/nginx-run.sh
+	uwsgiini="_uwsgi.ini"
+	siteconf="_nginx.conf"
+	uwsgiini=$projectname$uwsgiini
+	siteconf=$projectname$siteconf
+	cp templfiles/nginx/uwsgi.ini $sitedir/$uwsgiini
+	cp templfiles/nginx/uwsgi_params $sitedir/uwsgi_params
+	cp templfiles/nginx/site_nginx.conf $sitedir/$siteconf
+	cp templfiles/nginx/nginx-run.sh $sitedir/nginx-run.sh
+	chmod +x $sitedir/nginx-run.sh
 
 	echo -e "\n--Setup: Routing Nginx files to the Django project..."
 
-	sed -i "s,/path/to/your/project,$projectdir/$projectname,g" templfiles/nginx/site_nginx.conf
-	sed -i "s,project,$projectname,g" templfiles/nginx/site_nginx.conf
-	sed -i "s,/path/to/your/project,$projectdir/$projectname,g" $projectdir/$projectname/uwsgi.ini
-	sed -i "s,project,$projectname,g" $projectdir/$projectname/uwsgi.ini
-
-	cp templfiles/nginx/temp.conf templfiles/nginx/site_nginx.conf
-	rm templfiles/nginx/temp.conf
+	sed -i "s,/path/to/your/project,$sitedir,g" $sitedir/$siteconf
+	sed -i "s,project,$projectname,g" $sitedir/$siteconf
+	sed -i "s,/path/to/your/project,$sitedir,g" $sitedir/$uwsgiini
+	sed -i "s,project,$projectname,g" $sitedir/$uwsgiini
 fi
 
 
@@ -149,3 +151,9 @@ echo -e "\n============================================="
 echo -e "------- Django Project Setup Complete -------"
 echo -e "=============================================\n"
 
+if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ];  then 
+	echo -e "\nTo finish the NGINX setup you need to manually move the .conf file to the Nginx available-sites and symlink it to sites-enabled.
+	The reason this script doesn't do it is because it requires superuser privileges, thus it is preferably that the user personally does this last part of the setup."
+
+	echo -e "\n"
+fi
