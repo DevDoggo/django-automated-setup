@@ -9,25 +9,38 @@ read -p ">>> Set django 'projectname': " projectname
 read -p ">>> Set django 'appname': " appname
 read -p ">>> Set django 'local ip', (ex. 127.0.0.1): " localip
 read -p ">>> Set django 'port', (ex. 8000): " port
+echo -e ""
+read -p ">>> Do you want to setup Nginx? [y/N]: " nginx 
 
 echo -e "\n============================================="
 echo -e "\nSettings will be made as following:"
-echo -e "Projectname: $projectname \nAppname: $appname \nLocal IP: $localip \nPort: $port\n"
+echo -e "Projectname: $projectname \nAppname: $appname \nLocal IP: $localip \nPort: $port"
+if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ]; then 
+	echo -e "Nginx: Yes\n"
+else 
+	echo -e "Nginx: No\n"
+fi
 echo -e "A python virtual environment (venv) will be created as well.\n"
 echo -e "Note: No input settings are checked for correctness.\nAny settings you choose will be used regardless of legitimacy.\n" 
 read -p "Proceed with these settings? [Y/n]: " correctconfig
 
 #User Setting Consent Check
-if [ "$correctconfig" == "n" ]; then 
-	echo "\nDjango Project Config was manually interrupted! \n"
-	exit	
+if [ "$correctconfig" == "n" ] || [ "$correctconfig" == "N" ]; then 
+	
+	echo -e "\n>>>>>>>==================================<<<<<<<"
+	echo -e "Django Project Config was manually interrupted!"
+	echo -e ">>>>>>>==================================<<<<<<<\n"
+	return	
 fi
 
 echo -e "\n============================================="
 echo -e "--Setup: Creating virtual environment..."
 echo -e "=============================================\n"
 mkdir ../$projectname
-virtualenv ../$projectname/venv 
+
+
+virtualenv --python=python3 ../$projectname/venv
+#virtualenv ../$projectname/venv 
 
 echo -e "--\nSetup: Starting virtual environment...\n"
 source ../$projectname/venv/bin/activate
@@ -81,7 +94,7 @@ python3 manage.py makemigrations
 python3 manage.py migrate
 
 #python collect static - redirects output to /dev/null
-echo -e "\n--Setup: Collecting Django Static Files\n"
+echo -e "\n--Setup: Collecting Django Static Files...\n"
 python3 manage.py collectstatic > /dev/null
 
 
@@ -92,8 +105,44 @@ echo "python3 manage.py runserver $localip:$port" >> run.sh
 chmod +x run.sh
 
 
-#Moving the project out of the django-template directory
 cd ..
+#NGINX config ---------------------------------------------
+#User Setting Consent Check
+if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ];  then 
+	echo -e "\n============================================="
+	echo -e "--------------- NGINX Setup -----------------"
+	echo -e "=============================================\n"
+    
+	echo -e "--Setup: Installing uWGSI...\n"
+	pip3 install uwsgi
+
+	curdir=$(pwd)
+	projectdir="$(dirname "$curdir")"
+	sitedir=$projectdir/$projectname
+	echo $sitedir
+	echo -e "\n--Setup: Moving Nginx files..."
+
+	uwsgiini="_uwsgi.ini"
+	siteconf="_nginx.conf"
+	uwsgiini=$projectname$uwsgiini
+	siteconf=$projectname$siteconf
+	cp templfiles/nginx/uwsgi.ini $sitedir/$uwsgiini
+	cp templfiles/nginx/uwsgi_params $sitedir/uwsgi_params
+	cp templfiles/nginx/site_nginx.conf $sitedir/$siteconf
+	cp templfiles/nginx/nginx-run.sh $sitedir/nginx-run.sh
+	chmod +x $sitedir/nginx-run.sh
+
+	echo -e "\n--Setup: Routing Nginx files to the Django project..."
+
+	sed -i "s,/path/to/your/project,$sitedir,g" $sitedir/$siteconf
+	sed -i "s,project,$projectname,g" $sitedir/$siteconf
+	sed -i "s,/path/to/your/project,$sitedir,g" $sitedir/$uwsgiini
+	sed -i "s,project,$projectname,g" $sitedir/$uwsgiini
+fi
+
+
+
+#Moving the project out of the django-template directory
 deactivate
 echo -e "\n--Setup: Moving Django Project out of the Django Template directory"
 mv $projectname/* ../$projectname
@@ -105,3 +154,12 @@ echo -e "\n============================================="
 echo -e "------- Django Project Setup Complete -------"
 echo -e "=============================================\n"
 
+if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ];  then 
+	echo -e "\nTo finish the NGINX setup you need to manually move the .conf file to the Nginx available-sites and symlink it to sites-enabled."
+	echo -e "The reason this script doesn't do it is because it requires superuser privileges, thus it is preferably that the user personally does this last part of the setup."
+
+	echo -e "\nIn the django project directory, write the following commands in order with sudo:\n
+	mv $siteconf /etc/nginx/sites-available/$siteconf
+	ln -s /etc/nginx/sites-available/$siteconf /etc/nginx/sites-enabled/
+	systemctl restart nginx\
+fi
