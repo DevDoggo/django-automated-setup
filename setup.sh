@@ -37,7 +37,10 @@ echo -e "\n============================================="
 echo -e "--Setup: Creating virtual environment..."
 echo -e "=============================================\n"
 mkdir ../$projectname
-virtualenv ../$projectname/venv 
+
+
+virtualenv --python=python3 ../$projectname/venv
+#virtualenv ../$projectname/venv 
 
 echo -e "--\nSetup: Starting virtual environment...\n"
 source ../$projectname/venv/bin/activate
@@ -152,8 +155,11 @@ echo -e "------- Django Project Setup Complete -------"
 echo -e "=============================================\n"
 
 if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ];  then 
-	echo -e "\nTo finish the NGINX setup you need to manually move the .conf file to the Nginx available-sites and symlink it to sites-enabled.
-	The reason this script doesn't do it is because it requires superuser privileges, thus it is preferably that the user personally does this last part of the setup."
+	echo -e "\nTo finish the NGINX setup you need to manually move the .conf file to the Nginx available-sites and symlink it to sites-enabled."
+	echo -e "The reason this script doesn't do it is because it requires superuser privileges, thus it is preferably that the user personally does this last part of the setup."
 
-	echo -e "\n"
+	echo -e "\nIn the django project directory, write the following commands in order with sudo:\n
+	mv $siteconf /etc/nginx/sites-available/$siteconf
+	ln -s /etc/nginx/sites-available/$siteconf /etc/nginx/sites-enabled/
+	systemctl restart nginx\
 fi
