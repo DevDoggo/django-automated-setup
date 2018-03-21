@@ -8,13 +8,14 @@ echo -e "\n------- Django Template Project Setup -------\n"
 read -p ">>> Set django 'projectname': " projectname
 read -p ">>> Set django 'appname': " appname
 read -p ">>> Set django 'local ip', (ex. 127.0.0.1): " localip
+read -p ">>> Set django 'public ip' or 'url', (leave blank for none):" allowedhost
 read -p ">>> Set django 'port', (ex. 8000): " port
 echo -e ""
 read -p ">>> Do you want to setup Nginx? [y/N]: " nginx 
 
 echo -e "\n============================================="
 echo -e "\nSettings will be made as following:"
-echo -e "Projectname: $projectname \nAppname: $appname \nLocal IP: $localip \nPort: $port"
+echo -e "Projectname: $projectname \nAppname: $appname \nLocal IP: $localip \nExternal URL: $allowedhost\nPort: $port"
 if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ]; then 
 	echo -e "Nginx: Yes\n"
 else 
@@ -80,6 +81,9 @@ chmod +x $projectname/migrate.sh
 #Modify views/urls/settings to route correctly
 sed -i "s/appname/$appname/g" $projectname/$projectname/urls.py 
 sed -i "s/ALLOWED_HOSTS = \[\]/ALLOWED_HOSTS = \[\'$localip\'\]/g" $projectname/$projectname/settings.py
+sed -i "s/ALLOWED_HOSTS = \[/ALLOWED_HOSTS = \['$allowedhost',/g" $projectname/$projectname/settings.py 
+
+
 sed -i "s/'DIRS'\: \[\]/'DIRS'\: \[\'$appname\/templates\'\]/g" $projectname/$projectname/settings.py
 cat templfiles/misc-files/static-dir-code >> $projectname/$projectname/settings.py
 sed -i "s/appname_example/$appname/g" $projectname/$projectname/settings.py
