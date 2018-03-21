@@ -8,10 +8,9 @@ echo -e "\n------- Django Template Project Setup -------\n"
 read -p ">>> Set django 'projectname': " projectname
 read -p ">>> Set django 'appname': " appname
 read -p ">>> Set django 'local ip', (ex. 127.0.0.1): " localip
-read -p ">>> Set django 'public ip' or 'url', (leave blank for none):" allowedhost
+read -p ">>> Set django 'public ip' or 'url', (leave blank for none): " allowedhost
 read -p ">>> Set django 'port', (ex. 8000): " port
-echo -e ""
-read -p ">>> Do you want to setup Nginx? [y/N]: " nginx 
+read -p "\n>>> Do you want to setup Nginx? [y/N]: " nginx 
 
 echo -e "\n============================================="
 echo -e "\nSettings will be made as following:"
@@ -37,19 +36,20 @@ fi
 echo -e "\n============================================="
 echo -e "--Setup: Creating virtual environment..."
 echo -e "=============================================\n"
+
 mkdir ../$projectname
-
-
 virtualenv --python=python3 ../$projectname/venv
-#virtualenv ../$projectname/venv 
 
 echo -e "--\nSetup: Starting virtual environment...\n"
+
 source ../$projectname/venv/bin/activate
 
 echo -e "============================================="
 echo -e "--Setup: Installing requirements with pip3..."
 echo -e "=============================================\n"
+
 pip3 install -r requirements.txt
+
 echo -e "\n--Setup: Dependencies are done.\n"
 
 #Django Config 
@@ -64,6 +64,7 @@ python3 manage.py startapp $appname
 
 cd .. #brings us back up to document root
 echo -e "\n--Setup: Configuring local files...\n" 
+
 #Places Static and Template folders into app
 cp -r templfiles/static $projectname/$appname/static
 cp -r templfiles/templates $projectname/$appname/templates
@@ -82,8 +83,6 @@ chmod +x $projectname/migrate.sh
 sed -i "s/appname/$appname/g" $projectname/$projectname/urls.py 
 sed -i "s/ALLOWED_HOSTS = \[\]/ALLOWED_HOSTS = \[\'$localip\'\]/g" $projectname/$projectname/settings.py
 sed -i "s/ALLOWED_HOSTS = \[/ALLOWED_HOSTS = \['$allowedhost',/g" $projectname/$projectname/settings.py 
-
-
 sed -i "s/'DIRS'\: \[\]/'DIRS'\: \[\'$appname\/templates\'\]/g" $projectname/$projectname/settings.py
 cat templfiles/misc-files/static-dir-code >> $projectname/$projectname/settings.py
 sed -i "s/appname_example/$appname/g" $projectname/$projectname/settings.py
@@ -106,7 +105,6 @@ echo "source venv/bin/activate" >> run.sh
 echo "python3 manage.py runserver $localip:$port" >> run.sh
 chmod +x run.sh
 
-
 cd ..
 #NGINX config ---------------------------------------------
 #User Setting Consent Check
@@ -114,8 +112,8 @@ if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ];  then
 	echo -e "\n============================================="
 	echo -e "--------------- NGINX Setup -----------------"
 	echo -e "=============================================\n"
-    
 	echo -e "--Setup: Installing uWGSI...\n"
+
 	pip3 install uwsgi
 
 	curdir=$(pwd)
@@ -142,14 +140,14 @@ if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ];  then
 	sed -i "s,/path/to/your/project,$sitedir,g" $sitedir/$uwsgiini
 	sed -i "s,project,$projectname,g" $sitedir/$uwsgiini	
 	sed -i "s,project,$projectname,g" $sitedir/nginx-run.sh
-
 fi
 
 
 
 #Moving the project out of the django-template directory
-deactivate
 echo -e "\n--Setup: Moving Django Project out of the Django Template directory"
+
+deactivate
 mv $projectname/* ../$projectname
 rmdir $projectname
 cd ../$projectname
