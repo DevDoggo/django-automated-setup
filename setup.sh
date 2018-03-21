@@ -132,11 +132,13 @@ if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ];  then
 
 	echo -e "\n--Setup: Routing Nginx files to the Django project..."
 
+	echo "$sitedir"
 	sed -i "s,/path/to/your/project,$sitedir,g" $sitedir/$siteconf
 	sed -i "s,project,$projectname,g" $sitedir/$siteconf
 	sed -i "s,/path/to/your/project,$sitedir,g" $sitedir/$uwsgiini
 	sed -i "s,project,$projectname,g" $sitedir/$uwsgiini
-	sed -i "s/project/$appname/g" $projectname/nginx-run.sh
+	echo -e "$sitedir/nginx-run.sh"
+	sed -i "s,project,$projectname,g" $sitedir/nginx-run.sh
 
 fi
 
