@@ -6,27 +6,50 @@ echo -e "\n------- Django Template Project Setup -------\n"
 
 #user input for django config
 read -p ">>> Set django 'projectname': " projectname
+if [ "$projectname" == "" ]; then 
+	echo -e "\nNo projectname has been given. Exiting setup.\n"; return; fi
+
 read -p ">>> Set django 'appname': " appname
-read -p ">>> Set django 'local ip', (ex. 127.0.0.1): " localip
+if [ "$appname" == "" ]; then
+	echo -e "\nNo appname has been given. Exiting setup.\n"; return; fi
+
+read -p ">>> Set django 'local ip', (default. 127.0.0.1): " localip
 read -p ">>> Set django 'public ip' or 'url', (leave blank for none): " allowedhost
-read -p ">>> Set django 'port', (ex. 8000): " port
-read -p "\n>>> Do you want to setup Nginx? [y/N]: " nginx 
+read -p ">>> Set django 'port', (default. 8000): " port
+read -p ">>> Do you want to setup Nginx? [y/N]: " nginx 
+
+if [ "$localip" == "" ]; then localip="127.0.0.1"; fi
+if [ "$allowedhost" == "" ]; then allowedhost="None"; fi
+if [ "$port" == "" ]; then port="8000"; fi
 
 echo -e "\n============================================="
 echo -e "\nSettings will be made as following:"
-echo -e "Projectname: $projectname \nAppname: $appname \nLocal IP: $localip \nExternal URL: $allowedhost\nPort: $port"
-if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ]; then 
-	echo -e "Nginx: Yes\n"
+echo -e "----------------------------------------------"
+echo -en "
+Projectname:     $projectname 
+Appname:         $appname 
+Local IP:        $localip 
+External URL:    $allowedhost
+Port:            $port
+Nginx:           "
+
+if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ]; 
+then 
+	echo -e "Yes\n"
 else 
-	echo -e "Nginx: No\n"
+	echo -e "No\n"
 fi
+
+echo -e "----------------------------------------------\n"
 echo -e "A python virtual environment (venv) will be created as well.\n"
-echo -e "Note: No input settings are checked for correctness.\nAny settings you choose will be used regardless of legitimacy.\n" 
+echo -e "Note: No input settings are checked for correctness."
+echo -e "Any settings you choose will be used regardless of legitimacy.\n" 
+
 read -p "Proceed with these settings? [Y/n]: " correctconfig
 
 #User Setting Consent Check
-if [ "$correctconfig" == "n" ] || [ "$correctconfig" == "N" ]; then 
-	
+if [ "$correctconfig" == "n" ] || [ "$correctconfig" == "N" ]; 
+then 	
 	echo -e "\n>>>>>>>==================================<<<<<<<"
 	echo -e "Django Project Config was manually interrupted!"
 	echo -e ">>>>>>>==================================<<<<<<<\n"
@@ -65,28 +88,34 @@ python3 manage.py startapp $appname
 cd .. #brings us back up to document root
 echo -e "\n--Setup: Configuring local files...\n" 
 
+appdir=$projectname/$appname
+projappdir=$projectname/$projectname
+settings=$projappdir/settings.py
+
 #Places Static and Template folders into app
-cp -r templfiles/static $projectname/$appname/static
-cp -r templfiles/templates $projectname/$appname/templates
+cp -r templfiles/static $appdir/static
+cp -r templfiles/templates $appdir/templates
 
 #Place views/urls files
-cp templfiles/misc-files/main_urls.py $projectname/$projectname/urls.py
-cp templfiles/misc-files/app_urls.py $projectname/$appname/urls.py
-cp templfiles/misc-files/app_views.py $projectname/$appname/views.py
-cp templfiles/misc-files/app_models.py $projectname/$appname/models.py
-cp templfiles/misc-files/app_forms.py $projectname/$appname/forms.py
+cp templfiles/misc/main_urls.py $projappdir/urls.py
+cp templfiles/misc/app_urls.py $appdir/urls.py
+cp templfiles/misc/app_views.py $appdir/views.py
+cp templfiles/misc/app_models.py $appdir/models.py
+cp templfiles/misc/app_forms.py $appdir/forms.py
 #Add Migration File
-cp templfiles/misc-files/migrate.sh $projectname/migrate.sh
+cp templfiles/misc/migrate.sh $projectname/migrate.sh
 chmod +x $projectname/migrate.sh
 
 #Modify views/urls/settings to route correctly
-sed -i "s/appname/$appname/g" $projectname/$projectname/urls.py 
-sed -i "s/ALLOWED_HOSTS = \[\]/ALLOWED_HOSTS = \[\'$localip\'\]/g" $projectname/$projectname/settings.py
-sed -i "s/ALLOWED_HOSTS = \[/ALLOWED_HOSTS = \['$allowedhost',/g" $projectname/$projectname/settings.py 
-sed -i "s/'DIRS'\: \[\]/'DIRS'\: \[\'$appname\/templates\'\]/g" $projectname/$projectname/settings.py
-cat templfiles/misc-files/static-dir-code >> $projectname/$projectname/settings.py
-sed -i "s/appname_example/$appname/g" $projectname/$projectname/settings.py
-sed -i "/'django.contrib.staticfiles',/a #    DjangoApps\n    '$appname'," $projectname/$projectname/settings.py
+sed -i "s/appname/$appname/g" $projappdir/urls.py 
+sed -i "s/'DIRS'\: \[\]/'DIRS'\: \[\'$appname\/templates\'\]/g" $settings
+sed -i "s/appname_example/$appname/g" $settings
+sed -i "/'django.contrib.staticfiles',/a #    DjangoApps\n    '$appname'," $settings
+sed -i "s/ALLOWED_HOSTS = \[\]/ALLOWED_HOSTS = \[\'$localip\'\]/g" $settings
+if [ "$allowedhost" != "None"]; then
+	sed -i "s/ALLOWED_HOSTS = \[/ALLOWED_HOSTS = \['$allowedhost',/g" $settings 
+fi
+cat templfiles/misc/static-dir-code >> $settings
 
 #Django migration
 cd $projectname
@@ -108,7 +137,8 @@ chmod +x run.sh
 cd ..
 #NGINX config ---------------------------------------------
 #User Setting Consent Check
-if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ];  then 
+if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ];  
+then 
 	echo -e "\n============================================="
 	echo -e "--------------- NGINX Setup -----------------"
 	echo -e "=============================================\n"
@@ -157,12 +187,17 @@ echo -e "\n============================================="
 echo -e "------- Django Project Setup Complete -------"
 echo -e "=============================================\n"
 
-if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ];  then 
+if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ];  
+then 
 	echo -e "\nTo finish the NGINX setup you need to manually move the .conf file to the Nginx available-sites and symlink it to sites-enabled."
 	echo -e "The reason this script doesn't do it is because it requires superuser privileges, thus it is preferably that the user personally does this last part of the setup."
-
-	echo -e "\nIn the django project directory, write the following commands in order with sudo:\n"
+	
+	echo -e "\nIn the django project directory, write the following commands in order with sudo:\n
 	sudo mv $siteconf /etc/nginx/sites-available/$siteconf
 	sudo ln -s /etc/nginx/sites-available/$siteconf /etc/nginx/sites-enabled/
-	sudo systemctl restart nginx
+	sudo systemctl restart nginx"
+	
+	#sudo mv $siteconf /etc/nginx/sites-available/$siteconf
+	#sudo ln -s /etc/nginx/sites-available/$siteconf /etc/nginx/sites-enabled/
+	#sudo systemctl restart nginx
 fi
