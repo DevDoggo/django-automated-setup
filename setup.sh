@@ -6,23 +6,26 @@ echo -e "\n------- Django Template Project Setup -------\n"
 
 #user input for django config
 read -p ">>> Set django 'projectname': " projectname
+if [ "$projectname" == "" ]; then 
+	echo -e "\nNo projectname has been given. Exiting setup.\n"
+	return
+fi
+
 read -p ">>> Set django 'appname': " appname
+if [ "$appname" == "" ]; then
+	echo -e "\nNo appname has been given. Exiting setup.\n"
+	return
+fi
 read -p ">>> Set django 'local ip', (default. 127.0.0.1): " localip
 read -p ">>> Set django 'public ip' or 'url', (leave blank for none): " allowedhost
 read -p ">>> Set django 'port', (default. 8000): " port
 read -p ">>> Do you want to setup Nginx? [y/N]: " nginx 
 
-if [ "$projectname" == "" ]; then 
-	echo -e "\nNo projectname has been given. Exiting setup."
-	return
-fi
-if [ "$appname" == "" ]; then
-	echo -e "\nNo appname has been given. Exiting setup."
-fi
 
-if [ "$localip" == "" ]; then localip="127.0.0.1" fi
-if [ "$allowedhost" == "" ]; then fi
-if [ "$port" == "" ]; then port="8000" fi
+if [ "$localip" == "" ]; then localip="127.0.0.1" 
+fi
+if [ "$port" == "" ]; then port="8000" 
+fi
 
 
 
@@ -105,7 +108,10 @@ chmod +x $projectname/migrate.sh
 #Modify views/urls/settings to route correctly
 sed -i "s/appname/$appname/g" $projappdir/urls.py 
 sed -i "s/ALLOWED_HOSTS = \[\]/ALLOWED_HOSTS = \[\'$localip\'\]/g" $settings
-sed -i "s/ALLOWED_HOSTS = \[/ALLOWED_HOSTS = \['$allowedhost',/g" $settings 
+
+if [ "$allowedhost" != ""]; then
+	sed -i "s/ALLOWED_HOSTS = \[/ALLOWED_HOSTS = \['$allowedhost',/g" $settings 
+fi
 sed -i "s/'DIRS'\: \[\]/'DIRS'\: \[\'$appname\/templates\'\]/g" $settings
 cat templfiles/misc/static-dir-code >> $settings
 sed -i "s/appname_example/$appname/g" $settings
