@@ -6,8 +6,10 @@ Pro-Tip: If you know nothing of Django, learn to set up a project manually first
 it simply saves time for the people who already have some knowledge.
 
 ## How it Works
-You're asked to give Projectname, Appname, Local Debug-IP and Port. That's all!
+You're asked to give Projectname, Appname, Local Debug-IP, Exteral IP and Port. That's all!
 After that, the Django-setup will be fully automated! You'll be ready to run the application straight off the bat with the run.sh file created in the project setup!
+
+Now with NGINX configuration as well!
 
 ## How to Run
 
