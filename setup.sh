@@ -109,13 +109,14 @@ chmod +x $projectname/migrate.sh
 #Modify views/urls/settings to route correctly
 sed -i "s/appname/$appname/g" $projappdir/urls.py 
 sed -i "s/'DIRS'\: \[\]/'DIRS'\: \[\'$appname\/templates\'\]/g" $settings
+cat templfiles/misc/static-dir-code >> $settings
 sed -i "s/appname_example/$appname/g" $settings
 sed -i "/'django.contrib.staticfiles',/a #    DjangoApps\n    '$appname'," $settings
 sed -i "s/ALLOWED_HOSTS = \[\]/ALLOWED_HOSTS = \[\'$localip\'\]/g" $settings
-if [ "$allowedhost" != "None"]; then
+if [ "$allowedhost" != "None" ]; then
 	sed -i "s/ALLOWED_HOSTS = \[/ALLOWED_HOSTS = \['$allowedhost',/g" $settings 
 fi
-cat templfiles/misc/static-dir-code >> $settings
+
 
 #Django migration
 cd $projectname
@@ -149,7 +150,6 @@ then
 	curdir=$(pwd)
 	projectdir="$(dirname "$curdir")"
 	sitedir=$projectdir/$projectname
-	echo $sitedir
 	echo -e "\n--Setup: Moving Nginx files..."
 
 	uwsgiini="_uwsgi.ini"
@@ -164,15 +164,12 @@ then
 
 	echo -e "\n--Setup: Routing Nginx files to the Django project..."
 
-	echo "$sitedir"
 	sed -i "s,/path/to/your/project,$sitedir,g" $sitedir/$siteconf
 	sed -i "s,project,$projectname,g" $sitedir/$siteconf
 	sed -i "s,/path/to/your/project,$sitedir,g" $sitedir/$uwsgiini
 	sed -i "s,project,$projectname,g" $sitedir/$uwsgiini	
 	sed -i "s,project,$projectname,g" $sitedir/nginx-run.sh
 fi
-
-
 
 #Moving the project out of the django-template directory
 echo -e "\n--Setup: Moving Django Project out of the Django Template directory"
@@ -195,9 +192,10 @@ then
 	echo -e "\nIn the django project directory, write the following commands in order with sudo:\n
 	sudo mv $siteconf /etc/nginx/sites-available/$siteconf
 	sudo ln -s /etc/nginx/sites-available/$siteconf /etc/nginx/sites-enabled/
-	sudo systemctl restart nginx"
+	sudo systemctl restart nginx\n"
 	
 	#sudo mv $siteconf /etc/nginx/sites-available/$siteconf
 	#sudo ln -s /etc/nginx/sites-available/$siteconf /etc/nginx/sites-enabled/
 	#sudo systemctl restart nginx
 fi
+
