@@ -42,7 +42,9 @@ fi
 
 echo -e "----------------------------------------------\n"
 echo -e "A python virtual environment (venv) will be created as well.\n"
-echo -e "Note: No input settings are checked for correctness.\nAny settings you choose will be used regardless of legitimacy.\n" 
+echo -e "Note: No input settings are checked for correctness."
+echo -e "Any settings you choose will be used regardless of legitimacy.\n" 
+
 read -p "Proceed with these settings? [Y/n]: " correctconfig
 
 #User Setting Consent Check
@@ -106,15 +108,14 @@ chmod +x $projectname/migrate.sh
 
 #Modify views/urls/settings to route correctly
 sed -i "s/appname/$appname/g" $projappdir/urls.py 
+sed -i "s/'DIRS'\: \[\]/'DIRS'\: \[\'$appname\/templates\'\]/g" $settings
+sed -i "s/appname_example/$appname/g" $settings
+sed -i "/'django.contrib.staticfiles',/a #    DjangoApps\n    '$appname'," $settings
 sed -i "s/ALLOWED_HOSTS = \[\]/ALLOWED_HOSTS = \[\'$localip\'\]/g" $settings
-
 if [ "$allowedhost" != "None"]; then
 	sed -i "s/ALLOWED_HOSTS = \[/ALLOWED_HOSTS = \['$allowedhost',/g" $settings 
 fi
-sed -i "s/'DIRS'\: \[\]/'DIRS'\: \[\'$appname\/templates\'\]/g" $settings
 cat templfiles/misc/static-dir-code >> $settings
-sed -i "s/appname_example/$appname/g" $settings
-sed -i "/'django.contrib.staticfiles',/a #    DjangoApps\n    '$appname'," $settings
 
 #Django migration
 cd $projectname
