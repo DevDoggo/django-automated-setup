@@ -7,10 +7,26 @@ echo -e "\n------- Django Template Project Setup -------\n"
 #user input for django config
 read -p ">>> Set django 'projectname': " projectname
 read -p ">>> Set django 'appname': " appname
-read -p ">>> Set django 'local ip', (ex. 127.0.0.1): " localip
+read -p ">>> Set django 'local ip', (default. 127.0.0.1): " localip
 read -p ">>> Set django 'public ip' or 'url', (leave blank for none): " allowedhost
-read -p ">>> Set django 'port', (ex. 8000): " port
+read -p ">>> Set django 'port', (default. 8000): " port
 read -p ">>> Do you want to setup Nginx? [y/N]: " nginx 
+
+if [ "$projectname" == "" ]; then 
+	echo -e "\nNo projectname has been given. Exiting setup."
+	return
+fi
+if [ "$appname" == "" ]; then
+	echo -e "\nNo appname has been given. Exiting setup."
+fi
+
+if [ "$localip" == "" ]; then localip="127.0.0.1" fi
+if [ "$allowedhost" == "" ]; then fi
+if [ "$port" == "" ]; then port="8000" fi
+
+
+
+
 
 echo -e "\n============================================="
 echo -e "\nSettings will be made as following:"
