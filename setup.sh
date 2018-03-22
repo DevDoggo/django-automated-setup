@@ -7,41 +7,40 @@ echo -e "\n------- Django Template Project Setup -------\n"
 #user input for django config
 read -p ">>> Set django 'projectname': " projectname
 if [ "$projectname" == "" ]; then 
-	echo -e "\nNo projectname has been given. Exiting setup.\n"
-	return
-fi
+	echo -e "\nNo projectname has been given. Exiting setup.\n"; return; fi
 
 read -p ">>> Set django 'appname': " appname
 if [ "$appname" == "" ]; then
-	echo -e "\nNo appname has been given. Exiting setup.\n"
-	return
-fi
+	echo -e "\nNo appname has been given. Exiting setup.\n"; return; fi
+
 read -p ">>> Set django 'local ip', (default. 127.0.0.1): " localip
 read -p ">>> Set django 'public ip' or 'url', (leave blank for none): " allowedhost
 read -p ">>> Set django 'port', (default. 8000): " port
 read -p ">>> Do you want to setup Nginx? [y/N]: " nginx 
 
-
-if [ "$localip" == "" ]; then localip="127.0.0.1" 
-fi
-if [ "$port" == "" ]; then port="8000" 
-fi
-
-
-
-
+if [ "$localip" == "" ]; then localip="127.0.0.1"; fi
+if [ "$allowedhost" == "" ]; then allowedhost="None"; fi
+if [ "$port" == "" ]; then port="8000"; fi
 
 echo -e "\n============================================="
 echo -e "\nSettings will be made as following:"
-echo -e "Projectname: $projectname \nAppname: $appname \nLocal IP: $localip \nExternal URL: $allowedhost\nPort: $port"
+echo -e "----------------------------------------------"
+echo -en "
+Projectname:     $projectname 
+Appname:         $appname 
+Local IP:        $localip 
+External URL:    $allowedhost
+Port:            $port
+Nginx:           "
 
 if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ]; 
 then 
-	echo -e "Nginx: Yes\n"
+	echo -e "Yes\n"
 else 
-	echo -e "Nginx: No\n"
+	echo -e "No\n"
 fi
 
+echo -e "----------------------------------------------\n"
 echo -e "A python virtual environment (venv) will be created as well.\n"
 echo -e "Note: No input settings are checked for correctness.\nAny settings you choose will be used regardless of legitimacy.\n" 
 read -p "Proceed with these settings? [Y/n]: " correctconfig
@@ -109,7 +108,7 @@ chmod +x $projectname/migrate.sh
 sed -i "s/appname/$appname/g" $projappdir/urls.py 
 sed -i "s/ALLOWED_HOSTS = \[\]/ALLOWED_HOSTS = \[\'$localip\'\]/g" $settings
 
-if [ "$allowedhost" != ""]; then
+if [ "$allowedhost" != "None"]; then
 	sed -i "s/ALLOWED_HOSTS = \[/ALLOWED_HOSTS = \['$allowedhost',/g" $settings 
 fi
 sed -i "s/'DIRS'\: \[\]/'DIRS'\: \[\'$appname\/templates\'\]/g" $settings
@@ -191,9 +190,13 @@ if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ];
 then 
 	echo -e "\nTo finish the NGINX setup you need to manually move the .conf file to the Nginx available-sites and symlink it to sites-enabled."
 	echo -e "The reason this script doesn't do it is because it requires superuser privileges, thus it is preferably that the user personally does this last part of the setup."
-
-	echo -e "\nIn the django project directory, write the following commands in order with sudo:\n"
+	
+	echo -e "\nIn the django project directory, write the following commands in order with sudo:\n
 	sudo mv $siteconf /etc/nginx/sites-available/$siteconf
 	sudo ln -s /etc/nginx/sites-available/$siteconf /etc/nginx/sites-enabled/
-	sudo systemctl restart nginx
+	sudo systemctl restart nginx"
+	
+	#sudo mv $siteconf /etc/nginx/sites-available/$siteconf
+	#sudo ln -s /etc/nginx/sites-available/$siteconf /etc/nginx/sites-enabled/
+	#sudo systemctl restart nginx
 fi
