@@ -186,20 +186,23 @@ echo -e "=============================================\n"
 
 if [ "$nginx" == "y" ] || [ "$nginx" == "Y" ];  
 then 
-	echo -e "\nTo finish the NGINX setup you need to manually move the .conf file to the Nginx available-sites and symlink it to sites-enabled."
-	echo -e "The reason this script doesn't do it is because it requires superuser privileges, thus it is preferably that the user personally does this last part of the setup."
+	echo -e "\nTo finish the NGINX setup you need to:\nManually move the .conf file to the Nginx available-sites and symlink it to sites-enabled."
+	echo -e "The reason this script doesn't automatically without asking is because it requires superuser privileges, \nthus it is offered that the user does this last part of the setup manually."
 	
 	echo -e "\nIn the new django project directory, write the following commands in order with sudo:\n
-	sudo mv $siteconf /etc/nginx/sites-available/$siteconf
-	sudo ln -s /etc/nginx/sites-available/$siteconf /etc/nginx/sites-enabled/
-	sudo systemctl restart nginx\n
-	If you have another path to your nginx directory, use that instead."
+	mv $siteconf /etc/nginx/sites-available/$siteconf
+	ln -s /etc/nginx/sites-available/$siteconf /etc/nginx/sites-enabled/
+	systemctl restart nginx\n
+If you have another path to your nginx directory, use that instead.\n"
 
-	read -p ">>> If you want this program to do it for you, answer 'yes', any other input declines\n: " nginxmove
+	read -p ">>> If you want this program to do it for you, answer 'yes' without quotes, any other input declines: " nginxmove
 	if [ "$nginxmove" == "yes" ]; then
+		echo -e "\nMoving $siteconf to /etc/nginx/sites-available/ and symlinking"
 		sudo mv $siteconf /etc/nginx/sites-available/$siteconf
 		sudo ln -s /etc/nginx/sites-available/$siteconf /etc/nginx/sites-enabled/
+		echo -e "Restarting NGINX..."
 		sudo systemctl restart nginx
 	fi
+	echo -e "\nYou may now run the project using the 'nginx-run.sh' bash script in the django project directory."
 fi
 
