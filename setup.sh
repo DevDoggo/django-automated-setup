@@ -197,12 +197,16 @@ If you have another path to your nginx directory, use that instead.\n"
 
 	read -p ">>> If you want this program to do it for you, answer 'yes' without quotes, any other input declines: " nginxmove
 	if [ "$nginxmove" == "yes" ]; then
-		echo -e "\nMoving $siteconf to /etc/nginx/sites-available/ and symlinking"
+		echo -e "\nMoving $siteconf to /etc/nginx/sites-available/ and symlinking..."
 		sudo mv $siteconf /etc/nginx/sites-available/$siteconf
 		sudo ln -s /etc/nginx/sites-available/$siteconf /etc/nginx/sites-enabled/
 		echo -e "Restarting NGINX..."
 		sudo systemctl restart nginx
 	fi
-	echo -e "\nYou may now run the project using the 'nginx-run.sh' bash script in the django project directory."
+	echo -e "\nYou may now run the project with nginx using the 'nginx-run.sh' bash script in the django project directory.\n"
+else
+	echo -e "\nYou may now run the project with the run.sh bash script in the django project directory.\n"
 fi
+
+
 

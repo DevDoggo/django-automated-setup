@@ -9,7 +9,7 @@ def index(request):
     form = ExampleForm()
     model_form = ExampleModelForm()
     if request.method == "POST":
-        print("\n\nThis is what you input when you pressed the 'Press me!' button: ") 
+        print("\n\nThis is what you input when you pressed one of the buttons: ") 
         for key, value in request.POST.items():
             print (key, ":", value) 
         print("\n")
