@@ -14,7 +14,7 @@ if [ "$appname" == "" ]; then
 	echo -e "\nNo appname has been given. Exiting setup.\n"; return; fi
 
 read -p ">>> Set django 'local ip', (default. 127.0.0.1): " localip
-read -p ">>> Set django 'public ip' or 'url', (leave blank for none): " allowedhost
+read -p ">>> Set django external 'ip' or 'url', (leave blank for none): " allowedhost
 read -p ">>> Set django 'port', (default. 8000): " port
 read -p ">>> Do you want to setup Nginx? [y/N]: " nginx 
 
@@ -189,13 +189,17 @@ then
 	echo -e "\nTo finish the NGINX setup you need to manually move the .conf file to the Nginx available-sites and symlink it to sites-enabled."
 	echo -e "The reason this script doesn't do it is because it requires superuser privileges, thus it is preferably that the user personally does this last part of the setup."
 	
-	echo -e "\nIn the django project directory, write the following commands in order with sudo:\n
+	echo -e "\nIn the new django project directory, write the following commands in order with sudo:\n
 	sudo mv $siteconf /etc/nginx/sites-available/$siteconf
 	sudo ln -s /etc/nginx/sites-available/$siteconf /etc/nginx/sites-enabled/
-	sudo systemctl restart nginx\n"
-	
-	#sudo mv $siteconf /etc/nginx/sites-available/$siteconf
-	#sudo ln -s /etc/nginx/sites-available/$siteconf /etc/nginx/sites-enabled/
-	#sudo systemctl restart nginx
+	sudo systemctl restart nginx\n
+	If you have another path to your nginx directory, use that instead."
+
+	read -p ">>> If you want this program to do it for you, answer 'yes', any other input declines\n: " nginxmove
+	if [ "$nginxmove" == "yes" ]; then
+		sudo mv $siteconf /etc/nginx/sites-available/$siteconf
+		sudo ln -s /etc/nginx/sites-available/$siteconf /etc/nginx/sites-enabled/
+		sudo systemctl restart nginx
+	fi
 fi
 
